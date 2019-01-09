@@ -46,9 +46,11 @@ class RemindersTests: XCTestCase {
     /// - Returns: The reminder that is created.
     @discardableResult func createReminder() -> Reminder {
         let result = Reminder(context: coreDataManager.context)
+        result.timestamp = Date()
         result.locationLatitude = 50
         result.locationLongitude = 120
-        result.locationName = "Wellington, New Zealand"
+        result.locationName = "The Weta Cave"
+        result.locationAddress = "1 Weka St, Miramar, Wellington 6022, New Zealand"
         result.note = reminderNote
         result.extraNote = "Extra"
         result.isEnterReminder = true

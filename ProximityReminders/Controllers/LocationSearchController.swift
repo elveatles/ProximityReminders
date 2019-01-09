@@ -11,11 +11,21 @@ import MapKit
 
 /// Search for a location to add to a reminder.
 class LocationSearchController: UIViewController {
+    @IBOutlet weak var saveLocationButton: UIBarButtonItem!
     @IBOutlet weak var mapView: MKMapView!
+    
     /// The number of meters to show when a coordinate of a map is focused on.
     let mapRegionMeters: CLLocationDistance = 1000
+    /// The current location of the device.
+    var currentLocation: CLLocation?
     /// The current map item chosen.
-    var selectedMapItem: MKMapItem?
+    var selectedMapItem: MKMapItem? {
+        didSet {
+            saveLocationButton.isEnabled = selectedMapItem != nil
+        }
+    }
+    /// Used to pass selected map item to parent view controller.
+    weak var delegate: LocationSearchResultsDelegate?
     
     /// The search bar to find a location by name
     lazy var searchController: UISearchController = {
@@ -32,16 +42,24 @@ class LocationSearchController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        AppDelegate.locationManager.delegate = self
-        
         navigationItem.searchController = searchController
         // This is necessary otherwise the search bar will be covered by the search results controller.
         definesPresentationContext = true
         
-        AppDelegate.locationManager.requestWhenInUseAuthorization()
-        AppDelegate.locationManager.requestLocation()
+        // Show current location on map.
+        if let location = currentLocation {
+            let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: mapRegionMeters, longitudinalMeters: mapRegionMeters)
+            mapView.setRegion(region, animated: true)
+        }
     }
-
+    
+    /// Sends map item to parent view controller via delegate method.
+    @IBAction func saveLocation(_ sender: UIBarButtonItem) {
+        guard let mapItem = selectedMapItem else { return }
+        delegate?.selectedMapItem(mapItem)
+        navigationController?.popViewController(animated: true)
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -52,25 +70,6 @@ class LocationSearchController: UIViewController {
     }
     */
 
-}
-
-
-extension LocationSearchController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedWhenInUse {
-            AppDelegate.locationManager.requestLocation()
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.first else { return }
-        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: mapRegionMeters, longitudinalMeters: mapRegionMeters)
-        mapView.setRegion(region, animated: true)
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("locationManager didFailWithError: \(error.localizedDescription)")
-    }
 }
 
 

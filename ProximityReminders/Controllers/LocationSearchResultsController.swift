@@ -23,20 +23,6 @@ class LocationSearchResultsController: UITableViewController {
     var mapView: MKMapView?
     /// Delegate for when selections are made.
     weak var delegate: LocationSearchResultsDelegate?
-    
-    /**
-     Get a full address name from a placemark.
-     
-     - Parameter placemark: The placemark to get the address from.
-     - Returns: The full address name from the placemark.
-    */
-    static func address(from placemark: MKPlacemark) -> String {
-        let subThoroughfare = placemark.subThoroughfare ?? "" // street number
-        let thoroughfare = placemark.thoroughfare ?? "" // street name
-        let locality = placemark.locality ?? "" // city
-        let administrativeArea = placemark.administrativeArea ?? "" // state
-        return "\(subThoroughfare) \(thoroughfare), \(locality) \(administrativeArea)"
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +58,7 @@ extension LocationSearchResultsController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let selectedItem = matchingItems[indexPath.row]
         cell.textLabel?.text = selectedItem.name
-        cell.detailTextLabel?.text = LocationSearchResultsController.address(from: selectedItem.placemark)
+        cell.detailTextLabel?.text = AppDelegate.address(from: selectedItem.placemark)
         return cell
     }
 }

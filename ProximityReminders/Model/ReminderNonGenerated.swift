@@ -10,9 +10,16 @@ import Foundation
 import CoreLocation
 
 extension Reminder {
-    /// Convenient way to get locationLatitude and locationLongitude as a CLLocation.
+    /// Convenient way to get/set locationLatitude and locationLongitude as a CLLocation.
     var location: CLLocation {
-        return CLLocation(latitude: locationLatitude, longitude: locationLongitude)
+        get {
+            return CLLocation(latitude: locationLatitude, longitude: locationLongitude)
+        }
+        
+        set {
+            locationLatitude = newValue.coordinate.latitude
+            locationLongitude = newValue.coordinate.longitude
+        }
     }
     
     /// Update the section base on the state of isActive.

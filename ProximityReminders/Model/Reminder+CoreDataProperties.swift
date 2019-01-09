@@ -17,10 +17,12 @@ extension Reminder {
         return NSFetchRequest<Reminder>(entityName: "Reminder")
     }
 
+    @NSManaged public var timestamp: Date
     @NSManaged public var isEnterReminder: Bool
     @NSManaged public var locationLatitude: Double
     @NSManaged public var locationLongitude: Double
     @NSManaged public var locationName: String
+    @NSManaged public var locationAddress: String
     @NSManaged public var note: String
     @NSManaged public var extraNote: String
     @NSManaged public var isActive: Bool
