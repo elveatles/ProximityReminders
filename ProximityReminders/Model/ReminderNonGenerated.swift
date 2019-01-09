@@ -14,4 +14,13 @@ extension Reminder {
     var location: CLLocation {
         return CLLocation(latitude: locationLatitude, longitude: locationLongitude)
     }
+    
+    /// Update the section base on the state of isActive.
+    func updateSection() {
+        if isActive {
+            section = "Active Reminders"
+        } else {
+            section = "Inactive Reminders"
+        }
+    }
 }

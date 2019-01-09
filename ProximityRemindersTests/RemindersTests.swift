@@ -50,7 +50,10 @@ class RemindersTests: XCTestCase {
         result.locationLongitude = 120
         result.locationName = "Wellington, New Zealand"
         result.note = reminderNote
+        result.extraNote = "Extra"
         result.isEnterReminder = true
+        result.isActive = true
+        result.updateSection()
         return result
     }
     

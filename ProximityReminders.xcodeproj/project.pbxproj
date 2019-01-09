@@ -16,10 +16,12 @@
 		0994C50D21E5307800479A79 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0994C50B21E5307800479A79 /* LaunchScreen.storyboard */; };
 		0994C51821E5307800479A79 /* ProximityRemindersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C51721E5307800479A79 /* ProximityRemindersTests.swift */; };
 		0994C52321E5344200479A79 /* RemindersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C52221E5344200479A79 /* RemindersTests.swift */; };
-		0994C52B21E5380700479A79 /* Reminder+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C52921E5380700479A79 /* Reminder+CoreDataClass.swift */; };
-		0994C52C21E5380700479A79 /* Reminder+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C52A21E5380700479A79 /* Reminder+CoreDataProperties.swift */; };
 		0994C52E21E5383B00479A79 /* ReminderNonGenerated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C52D21E5383B00479A79 /* ReminderNonGenerated.swift */; };
 		0994C53021E5417100479A79 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C52F21E5417100479A79 /* CoreDataManager.swift */; };
+		0994C53321E55F3600479A79 /* Reminder+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C53121E55F3500479A79 /* Reminder+CoreDataClass.swift */; };
+		0994C53421E55F3600479A79 /* Reminder+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C53221E55F3500479A79 /* Reminder+CoreDataProperties.swift */; };
+		0994C53721E5707700479A79 /* LocationSearchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C53621E5707700479A79 /* LocationSearchResultsController.swift */; };
+		0994C53921E580DE00479A79 /* LocationSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0994C53821E580DE00479A79 /* LocationSearchController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,10 +48,12 @@
 		0994C51721E5307800479A79 /* ProximityRemindersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProximityRemindersTests.swift; sourceTree = "<group>"; };
 		0994C51921E5307800479A79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0994C52221E5344200479A79 /* RemindersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersTests.swift; sourceTree = "<group>"; };
-		0994C52921E5380700479A79 /* Reminder+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reminder+CoreDataClass.swift"; sourceTree = "<group>"; };
-		0994C52A21E5380700479A79 /* Reminder+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reminder+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		0994C52D21E5383B00479A79 /* ReminderNonGenerated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNonGenerated.swift; sourceTree = "<group>"; };
 		0994C52F21E5417100479A79 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		0994C53121E55F3500479A79 /* Reminder+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reminder+CoreDataClass.swift"; sourceTree = "<group>"; };
+		0994C53221E55F3500479A79 /* Reminder+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reminder+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		0994C53621E5707700479A79 /* LocationSearchResultsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchResultsController.swift; sourceTree = "<group>"; };
+		0994C53821E580DE00479A79 /* LocationSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,10 +95,9 @@
 		0994C4FC21E5307600479A79 /* ProximityReminders */ = {
 			isa = PBXGroup;
 			children = (
+				0994C53521E5703A00479A79 /* Controllers */,
 				0994C52421E5346100479A79 /* Model */,
 				0994C4FD21E5307600479A79 /* AppDelegate.swift */,
-				0994C50221E5307600479A79 /* MasterViewController.swift */,
-				0994C50421E5307600479A79 /* DetailViewController.swift */,
 				0994C50621E5307600479A79 /* Main.storyboard */,
 				0994C50921E5307800479A79 /* Assets.xcassets */,
 				0994C50B21E5307800479A79 /* LaunchScreen.storyboard */,
@@ -117,12 +120,23 @@
 		0994C52421E5346100479A79 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				0994C52921E5380700479A79 /* Reminder+CoreDataClass.swift */,
-				0994C52A21E5380700479A79 /* Reminder+CoreDataProperties.swift */,
+				0994C53121E55F3500479A79 /* Reminder+CoreDataClass.swift */,
+				0994C53221E55F3500479A79 /* Reminder+CoreDataProperties.swift */,
 				0994C52D21E5383B00479A79 /* ReminderNonGenerated.swift */,
 				0994C52F21E5417100479A79 /* CoreDataManager.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		0994C53521E5703A00479A79 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				0994C50221E5307600479A79 /* MasterViewController.swift */,
+				0994C50421E5307600479A79 /* DetailViewController.swift */,
+				0994C53821E580DE00479A79 /* LocationSearchController.swift */,
+				0994C53621E5707700479A79 /* LocationSearchResultsController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -227,13 +241,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				0994C4FE21E5307600479A79 /* AppDelegate.swift in Sources */,
-				0994C52B21E5380700479A79 /* Reminder+CoreDataClass.swift in Sources */,
 				0994C50121E5307600479A79 /* ProximityReminders.xcdatamodeld in Sources */,
 				0994C50321E5307600479A79 /* MasterViewController.swift in Sources */,
 				0994C50521E5307600479A79 /* DetailViewController.swift in Sources */,
+				0994C53321E55F3600479A79 /* Reminder+CoreDataClass.swift in Sources */,
+				0994C53721E5707700479A79 /* LocationSearchResultsController.swift in Sources */,
+				0994C53921E580DE00479A79 /* LocationSearchController.swift in Sources */,
 				0994C52E21E5383B00479A79 /* ReminderNonGenerated.swift in Sources */,
 				0994C53021E5417100479A79 /* CoreDataManager.swift in Sources */,
-				0994C52C21E5380700479A79 /* Reminder+CoreDataProperties.swift in Sources */,
+				0994C53421E55F3600479A79 /* Reminder+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

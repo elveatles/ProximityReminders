@@ -8,10 +8,13 @@
 
 import UIKit
 import CoreData
+import CoreLocation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
-
+    
+    static let locationManager = CLLocationManager()
+    
     var window: UIWindow?
 
 
