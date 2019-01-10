@@ -15,6 +15,7 @@ class RemindersTests: XCTestCase {
     var coreDataManager: CoreDataManager!
     /// This is used to fetch a reminder by its note.
     let reminderNote = "TestReminder"
+    let reminderAddress = "6801 Hollywood Blvd, Hollywood, CA"
     
     /// Create an in-memory persistent container.
     func createMockContainer() -> NSPersistentContainer {
@@ -49,8 +50,8 @@ class RemindersTests: XCTestCase {
         result.timestamp = Date()
         result.locationLatitude = 50
         result.locationLongitude = 120
-        result.locationName = "The Weta Cave"
-        result.locationAddress = "1 Weka St, Miramar, Wellington 6022, New Zealand"
+        result.locationName = "TCL Chinese Theater"
+        result.locationAddress = reminderAddress
         result.note = reminderNote
         result.extraNote = "Extra"
         result.isEnterReminder = true
@@ -111,5 +112,21 @@ class RemindersTests: XCTestCase {
         coreDataManager.save()
         let fetchedReminder = fetchReminder()
         XCTAssertNil(fetchedReminder)
+    }
+    
+    func testFetchActive() {
+        createReminder()
+        let inactiveReminder = createReminder()
+        inactiveReminder.isActive = false
+        coreDataManager.save()
+        let reminders = Reminder.fetchActive(context: coreDataManager.context)
+        XCTAssertEqual(reminders.count, 1)
+    }
+    
+    func testFetchByAddress() {
+        createReminder()
+        coreDataManager.save()
+        let fetchedReminder = Reminder.fetchByAddress(reminderAddress, context: coreDataManager.context)
+        XCTAssertNotNil(fetchedReminder)
     }
 }

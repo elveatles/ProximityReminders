@@ -87,6 +87,8 @@ class RemindersDataSource: NSObject, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let reminder = fetchedResultsController.object(at: indexPath)
+            AppDelegate.locationManager.stopMonitoring(reminder: reminder)
+            
             AppDelegate.coreDataManager.delete(reminder)
             AppDelegate.coreDataManager.save()
         }

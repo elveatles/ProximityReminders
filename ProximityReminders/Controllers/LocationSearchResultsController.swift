@@ -58,7 +58,7 @@ extension LocationSearchResultsController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let selectedItem = matchingItems[indexPath.row]
         cell.textLabel?.text = selectedItem.name
-        cell.detailTextLabel?.text = AppDelegate.address(from: selectedItem.placemark)
+        cell.detailTextLabel?.text = LocationManager.address(from: selectedItem.placemark)
         return cell
     }
 }

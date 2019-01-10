@@ -16,8 +16,8 @@ class LocationSearchController: UIViewController {
     
     /// The number of meters to show when a coordinate of a map is focused on.
     let mapRegionMeters: CLLocationDistance = 1000
-    /// The current location of the device.
-    var currentLocation: CLLocation?
+    /// Map delegate renders overlays.
+    lazy var mapDelegate = MapDelegate()
     /// The current map item chosen.
     var selectedMapItem: MKMapItem? {
         didSet {
@@ -46,11 +46,14 @@ class LocationSearchController: UIViewController {
         // This is necessary otherwise the search bar will be covered by the search results controller.
         definesPresentationContext = true
         
-        // Show current location on map.
-        if let location = currentLocation {
-            let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: mapRegionMeters, longitudinalMeters: mapRegionMeters)
-            mapView.setRegion(region, animated: true)
+        AppDelegate.locationManager.delegate = self
+        mapView.delegate = mapDelegate
+        
+        // Request location then show it on the map.
+        if let location = AppDelegate.locationManager.locManager.location {
+            MapHelpers.showLocation(with: mapView, coordinate: location.coordinate)
         }
+        AppDelegate.locationManager.locManager.requestLocation()
     }
     
     /// Sends map item to parent view controller via delegate method.
@@ -73,22 +76,19 @@ class LocationSearchController: UIViewController {
 }
 
 
+extension LocationSearchController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else { return }
+        MapHelpers.showLocation(with: mapView, coordinate: location.coordinate)
+    }
+}
+
+
 extension LocationSearchController: LocationSearchResultsDelegate {
     func selectedMapItem(_ mapItem: MKMapItem) {
         // Show an annotation on the map for the newly selected map item
         selectedMapItem = mapItem
-        mapView.removeAnnotations(mapView.annotations)
-        let annotation = MKPointAnnotation()
-        let placemark = mapItem.placemark
-        annotation.coordinate = placemark.coordinate
-        annotation.title = mapItem.name
-        let locality = placemark.locality ?? "" // city
-        let administrativeArea = placemark.administrativeArea ?? "" // state
-        annotation.subtitle = "\(locality) \(administrativeArea)"
-        mapView.addAnnotation(annotation)
-        let region = MKCoordinateRegion(center: annotation.coordinate, latitudinalMeters: mapRegionMeters, longitudinalMeters: mapRegionMeters)
-        mapView.setRegion(region, animated: true)
-        
+        MapHelpers.addAnnotation(to: mapView, with: mapItem.placemark)
         searchController.searchBar.text = ""
     }
 }

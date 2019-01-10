@@ -43,37 +43,27 @@ class DetailViewController: UIViewController {
             }
         }
     }
-    /// The location the device is currently at.
-    var currentLocation: CLLocation?
     /// The map item chosen for the reminder location.
     var mapItem: MKMapItem? {
         didSet {
-            guard let theMapItem = mapItem else { return }
-            
-            let address = AppDelegate.address(from: theMapItem.placemark)
-            
-            // Set the location button title to be the location address.
-            locationButton.setTitle(address, for: .normal)
-            
-            // Show location on the map.
-            mapView.removeAnnotations(mapView.annotations)
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = theMapItem.placemark.coordinate
-            annotation.title = theMapItem.name
-            annotation.subtitle = address
-            mapView.addAnnotation(annotation)
-            let region = MKCoordinateRegion(center: annotation.coordinate, latitudinalMeters: mapRegionMeters, longitudinalMeters: mapRegionMeters)
-            mapView.setRegion(region, animated: true)
+            updateLocationUI()
         }
     }
+    /// Renders overlays.
+    lazy var mapDelegate = MapDelegate()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        AppDelegate.locationManager.delegate = self
-        AppDelegate.locationManager.requestWhenInUseAuthorization()
+        mapView.delegate = mapDelegate
         
         configureView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        AppDelegate.locationManager.delegate = self
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -81,7 +71,6 @@ class DetailViewController: UIViewController {
             // Pass the current location to the location search view controller.
             let controller = segue.destination as! LocationSearchController
             controller.delegate = self
-            controller.currentLocation = currentLocation
         }
     }
     
@@ -110,10 +99,16 @@ class DetailViewController: UIViewController {
         if let mapItem = mapItem, let location = mapItem.placemark.location {
             reminderToSave.location = location
             reminderToSave.locationName = mapItem.name ?? ""
-            reminderToSave.locationAddress = AppDelegate.address(from: mapItem.placemark)
+            reminderToSave.locationAddress = LocationManager.address(from: mapItem.placemark)
         }
         
         AppDelegate.coreDataManager.save()
+        
+        if reminderToSave.isActive {
+            AppDelegate.locationManager.startMonitoring(reminder: reminderToSave)
+        } else {
+            AppDelegate.locationManager.stopMonitoring(reminder: reminderToSave)
+        }
         
         goBackToMaster()
     }
@@ -151,6 +146,30 @@ class DetailViewController: UIViewController {
         navigationController?.navigationController?.popViewController(animated: true)
     }
     
+    /// Update the location button text and the map annotation.
+    func updateLocationUI() {
+        // Need either a mapItem or a reminder to get location information.
+        guard mapItem != nil || reminder != nil else {
+            locationButton.setTitle("Tap here to set location", for: .normal)
+            
+            mapView.removeOverlays(mapView.overlays)
+            mapView.removeAnnotations(mapView.annotations)
+            return
+        }
+        
+        // Use either the current map item or the saved Reminder data.
+        if let mapItem = mapItem {
+            let address = LocationManager.address(from: mapItem.placemark)
+            locationButton.setTitle(address, for: .normal)
+            
+            MapHelpers.addAnnotation(to: mapView, with: mapItem.placemark)
+        } else if let reminder = reminder {
+            locationButton.setTitle(reminder.locationAddress, for: .normal)
+            
+            MapHelpers.addAnnotation(to: mapView, with: reminder)
+        }
+    }
+    
     /// Configure the view for a new reminder.
     private func configureViewNew() {
         noteLabel.text = ""
@@ -159,8 +178,14 @@ class DetailViewController: UIViewController {
         isRecurringControl.selectedSegmentIndex = isRecurringTrueIndex
         isActiveSwitch.isOn = true
         mapItem = nil
-        // Requesting the location will show the current location on the map.
-        AppDelegate.locationManager.requestLocation()
+        
+        updateLocationUI()
+        
+        // Request location then show it on the map.
+        if let location = AppDelegate.locationManager.locManager.location {
+            MapHelpers.showLocation(with: mapView, coordinate: location.coordinate)
+        }
+        AppDelegate.locationManager.locManager.requestLocation()
     }
     
     /// Configure the view for an edit reminder.
@@ -177,37 +202,15 @@ class DetailViewController: UIViewController {
         isActiveSwitch.isOn = reminder.isActive
         mapItem = nil
         
-        locationButton.setTitle(reminder.locationAddress, for: .normal)
-        
-        // Show location on the map.
-        mapView.removeAnnotations(mapView.annotations)
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = reminder.location.coordinate
-        annotation.title = reminder.locationName
-        annotation.subtitle = reminder.locationAddress
-        mapView.addAnnotation(annotation)
-        let region = MKCoordinateRegion(center: annotation.coordinate, latitudinalMeters: mapRegionMeters, longitudinalMeters: mapRegionMeters)
-        mapView.setRegion(region, animated: true)
+        updateLocationUI()
     }
 }
 
 
 extension DetailViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedWhenInUse {
-            AppDelegate.locationManager.requestLocation()
-        }
-    }
-    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
-        currentLocation = location
-        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: mapRegionMeters, longitudinalMeters: mapRegionMeters)
-        mapView.setRegion(region, animated: true)
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("locationManager didFailWithError: \(error.localizedDescription)")
+        MapHelpers.showLocation(with: mapView, coordinate: location.coordinate)
     }
 }
 

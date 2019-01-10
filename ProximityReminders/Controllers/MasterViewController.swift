@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 
+// Displays a list of saved reminders.
 class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate {
 
     var detailViewController: DetailViewController? = nil

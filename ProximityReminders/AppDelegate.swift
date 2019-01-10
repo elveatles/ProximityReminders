@@ -8,12 +8,12 @@
 
 import UIKit
 import CoreData
-import MapKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
     /// Location manager that should be used throughout the app.
-    static let locationManager = CLLocationManager()
+    static let locationManager = LocationManager()
     /// Core data manager that should be used throughout the app for saving, editing, deleting managed objects.
     static let coreDataManager = CoreDataManager(persistentContainer: persistentContainer)
     
@@ -45,20 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         return container
     }()
     
-    /**
-     Get a full address name from a placemark.
-     
-     - Parameter placemark: The placemark to get the address from.
-     - Returns: The full address name from the placemark.
-     */
-    static func address(from placemark: MKPlacemark) -> String {
-        let subThoroughfare = placemark.subThoroughfare ?? "" // street number
-        let thoroughfare = placemark.thoroughfare ?? "" // street name
-        let locality = placemark.locality ?? "" // city
-        let administrativeArea = placemark.administrativeArea ?? "" // state
-        return "\(subThoroughfare) \(thoroughfare), \(locality) \(administrativeArea)"
-    }
-    
     var window: UIWindow?
 
 
@@ -68,6 +54,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let navigationController = splitViewController.viewControllers[splitViewController.viewControllers.count-1] as! UINavigationController
         navigationController.topViewController!.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
         splitViewController.delegate = self
+        
+        UNUserNotificationCenter.current().delegate = self
+        // Request authorization for location.
+        AppDelegate.locationManager.locManager.requestAlwaysAuthorization()
+        // Request authorization for notifications.
+        let notificationOptions: UNAuthorizationOptions = [.badge, .sound, .alert]
+        UNUserNotificationCenter.current().requestAuthorization(options: notificationOptions) { (success, error) in
+            if let error = error {
+                print("Notification authorization error: \(error.localizedDescription)")
+            }
+        }
+        
+        // Start monitoring saved active reminders.
+        let activeReminders = Reminder.fetchActive(context: AppDelegate.coreDataManager.context)
+        AppDelegate.locationManager.startMonitoring(reminders: activeReminders)
         
         return true
     }
@@ -88,6 +89,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        // Clear notifications
+        application.applicationIconBadgeNumber = 0
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -107,3 +113,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     }
 }
 
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("userNotificationCenter didReceive response.")
+    }
+}

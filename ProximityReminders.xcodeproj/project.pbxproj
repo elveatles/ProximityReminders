@@ -25,6 +25,9 @@
 		09A2002B21E69431002B6623 /* UIViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A2002A21E69431002B6623 /* UIViewController+Helpers.swift */; };
 		09A2003121E6AAA6002B6623 /* RemindersDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A2003021E6AAA6002B6623 /* RemindersDataSource.swift */; };
 		09A2003421E6ADAD002B6623 /* ReminderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A2003321E6ADAD002B6623 /* ReminderCell.swift */; };
+		09A2003721E6CC90002B6623 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A2003621E6CC90002B6623 /* LocationManager.swift */; };
+		09A2003B21E6DE19002B6623 /* MapDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A2003A21E6DE19002B6623 /* MapDelegate.swift */; };
+		09A2003F21E6E635002B6623 /* MapHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A2003E21E6E635002B6623 /* MapHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +63,12 @@
 		09A2002A21E69431002B6623 /* UIViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Helpers.swift"; sourceTree = "<group>"; };
 		09A2003021E6AAA6002B6623 /* RemindersDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersDataSource.swift; sourceTree = "<group>"; };
 		09A2003321E6ADAD002B6623 /* ReminderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderCell.swift; sourceTree = "<group>"; };
+		09A2003621E6CC90002B6623 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		09A2003A21E6DE19002B6623 /* MapDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDelegate.swift; sourceTree = "<group>"; };
+		09A2003E21E6E635002B6623 /* MapHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapHelpers.swift; sourceTree = "<group>"; };
+		09A2004021E7D379002B6623 /* ChineseTheater.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ChineseTheater.gpx; sourceTree = "<group>"; };
+		09A2004221E7D5AC002B6623 /* EgyptianTheater.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = EgyptianTheater.gpx; sourceTree = "<group>"; };
+		09A2004321E7D5E2002B6623 /* MagicCastle.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MagicCastle.gpx; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +110,9 @@
 		0994C4FC21E5307600479A79 /* ProximityReminders */ = {
 			isa = PBXGroup;
 			children = (
+				09A2004121E7D576002B6623 /* GPX */,
+				09A2003821E6DDAF002B6623 /* Delegates */,
+				09A2003521E6CC81002B6623 /* Location */,
 				09A2003221E6AD94002B6623 /* Views */,
 				09A2002F21E6AA72002B6623 /* DataSource */,
 				09A2002921E6940E002B6623 /* Extensions */,
@@ -170,6 +182,33 @@
 				09A2003321E6ADAD002B6623 /* ReminderCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		09A2003521E6CC81002B6623 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				09A2003621E6CC90002B6623 /* LocationManager.swift */,
+				09A2003E21E6E635002B6623 /* MapHelpers.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
+		09A2003821E6DDAF002B6623 /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				09A2003A21E6DE19002B6623 /* MapDelegate.swift */,
+			);
+			path = Delegates;
+			sourceTree = "<group>";
+		};
+		09A2004121E7D576002B6623 /* GPX */ = {
+			isa = PBXGroup;
+			children = (
+				09A2004021E7D379002B6623 /* ChineseTheater.gpx */,
+				09A2004221E7D5AC002B6623 /* EgyptianTheater.gpx */,
+				09A2004321E7D5E2002B6623 /* MagicCastle.gpx */,
+			);
+			path = GPX;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -276,6 +315,7 @@
 				0994C4FE21E5307600479A79 /* AppDelegate.swift in Sources */,
 				0994C50121E5307600479A79 /* ProximityReminders.xcdatamodeld in Sources */,
 				0994C50321E5307600479A79 /* MasterViewController.swift in Sources */,
+				09A2003B21E6DE19002B6623 /* MapDelegate.swift in Sources */,
 				0994C50521E5307600479A79 /* DetailViewController.swift in Sources */,
 				09A2003121E6AAA6002B6623 /* RemindersDataSource.swift in Sources */,
 				0994C53321E55F3600479A79 /* Reminder+CoreDataClass.swift in Sources */,
@@ -283,6 +323,8 @@
 				0994C53921E580DE00479A79 /* LocationSearchController.swift in Sources */,
 				0994C52E21E5383B00479A79 /* ReminderNonGenerated.swift in Sources */,
 				09A2002B21E69431002B6623 /* UIViewController+Helpers.swift in Sources */,
+				09A2003721E6CC90002B6623 /* LocationManager.swift in Sources */,
+				09A2003F21E6E635002B6623 /* MapHelpers.swift in Sources */,
 				0994C53021E5417100479A79 /* CoreDataManager.swift in Sources */,
 				09A2003421E6ADAD002B6623 /* ReminderCell.swift in Sources */,
 				0994C53421E55F3600479A79 /* Reminder+CoreDataProperties.swift in Sources */,
