@@ -158,13 +158,21 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="mOI-FS-AaM">
-                        <barButtonItem key="rightBarButtonItem" title="Save" id="Cf5-kC-6GK">
-                            <connections>
-                                <action selector="saveReminder:" destination="JEX-9P-axG" id="lVg-0X-SoL"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Save" id="Cf5-kC-6GK">
+                                <connections>
+                                    <action selector="saveReminder:" destination="JEX-9P-axG" id="lVg-0X-SoL"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Delete" id="cKP-2D-A65">
+                                <connections>
+                                    <action selector="deleteReminder:" destination="JEX-9P-axG" id="LCN-RT-d5K"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="deleteButton" destination="cKP-2D-A65" id="Nej-la-uqm"/>
                         <outlet property="extraNoteLabel" destination="Hao-XW-Dde" id="vMx-6h-KdK"/>
                         <outlet property="isActiveSwitch" destination="KeN-pZ-aI6" id="GY9-8g-tKk"/>
                         <outlet property="isEnterReminderControl" destination="IQt-sp-coW" id="f4N-Ld-jM5"/>

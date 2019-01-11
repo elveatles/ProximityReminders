@@ -17,6 +17,7 @@ class DetailViewController: UIViewController {
         case location
     }
     
+    @IBOutlet weak var deleteButton: UIBarButtonItem!
     @IBOutlet weak var noteLabel: UITextField!
     @IBOutlet weak var extraNoteLabel: UITextField!
     @IBOutlet weak var locationButton: UIButton!
@@ -127,6 +128,28 @@ class DetailViewController: UIViewController {
         }
     }
     
+    /// Delete the current reminder.
+    @IBAction func deleteReminder(_ sender: UIBarButtonItem) {
+        guard let reminder = reminder else { return }
+        
+        let alert = UIAlertController(title: "Confirm Delete", message: "Are you sure you want to delete this reminder?", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "Yes", style: .destructive) { (action) in
+            AppDelegate.coreDataManager.delete(reminder)
+            AppDelegate.coreDataManager.save()
+            
+            let isCollapsed = self.splitViewController?.isCollapsed ?? true
+            if isCollapsed {
+                self.goBackToMaster()
+            } else {
+                self.reminder = nil
+            }
+        }
+        alert.addAction(yesAction)
+        let noAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
+        alert.addAction(noAction)
+        present(alert, animated: true, completion: nil)
+    }
+    
     /// Configure the view with `reminder`.
     func configureView() {
         if reminder == nil {
@@ -189,6 +212,8 @@ class DetailViewController: UIViewController {
     
     /// Configure the view for a new reminder.
     private func configureViewNew() {
+        deleteButton.isEnabled = false
+        
         noteLabel.text = ""
         extraNoteLabel.text = ""
         isEnterReminderControl.selectedSegmentIndex = isEnterTrueIndex
@@ -211,6 +236,8 @@ class DetailViewController: UIViewController {
             print("Could not configure view for edit because reminder is nil.")
             return
         }
+        
+        deleteButton.isEnabled = true
         
         noteLabel.text = reminder.note
         extraNoteLabel.text = reminder.extraNote
