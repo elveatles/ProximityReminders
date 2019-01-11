@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     static let locationManager = LocationManager()
     /// Core data manager that should be used throughout the app for saving, editing, deleting managed objects.
     static let coreDataManager = CoreDataManager(persistentContainer: persistentContainer)
+    /// Called when user notification authorization status changes.
+    /// Parameters are the same as completion handler for `UNUserNotificationCenter.requestAuthorization`.
+    static var userNotifAuthChanged: ((Bool, Error?) -> Void)?
     
     /// The persistent container that will be used in coreDataManager.
     static var persistentContainer: NSPersistentContainer = {
@@ -63,8 +66,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         // Request authorization for notifications.
         let notificationOptions: UNAuthorizationOptions = [.badge, .sound, .alert]
         UNUserNotificationCenter.current().requestAuthorization(options: notificationOptions) { (success, error) in
-            if let error = error {
-                print("Notification authorization error: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                AppDelegate.userNotifAuthChanged?(success, error)
             }
         }
         

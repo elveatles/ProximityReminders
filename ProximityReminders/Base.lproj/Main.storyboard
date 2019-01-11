@@ -137,18 +137,40 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TLc-pW-UN8">
+                                <rect key="frame" x="0.0" y="964" width="768" height="60"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fvk-bE-hSW">
+                                        <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.81176470590000005" green="0.29411764709999999" blue="0.31372549020000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="fvk-bE-hSW" firstAttribute="leading" secondItem="TLc-pW-UN8" secondAttribute="leading" id="RiN-lE-EUk"/>
+                                    <constraint firstAttribute="trailing" secondItem="fvk-bE-hSW" secondAttribute="trailing" id="f0E-Yc-5d6"/>
+                                    <constraint firstAttribute="bottom" secondItem="fvk-bE-hSW" secondAttribute="bottom" id="k5u-cc-cYf"/>
+                                    <constraint firstAttribute="height" constant="60" id="nLo-4f-La4"/>
+                                    <constraint firstItem="fvk-bE-hSW" firstAttribute="top" secondItem="TLc-pW-UN8" secondAttribute="top" id="uYH-7Y-Q5H"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="UNw-Zw-clx" firstAttribute="trailing" secondItem="VUw-jc-0yf" secondAttribute="trailing" id="2zW-es-aIE"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="XzF-8g-4ue" secondAttribute="trailing" constant="16" id="47P-fz-F8k"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="DM6-Yx-E5S" secondAttribute="trailing" constant="16" id="Hi7-xb-YyV"/>
+                            <constraint firstItem="TLc-pW-UN8" firstAttribute="bottom" secondItem="VUw-jc-0yf" secondAttribute="bottom" id="KzE-xV-j7T"/>
                             <constraint firstItem="XzF-8g-4ue" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="16" id="LHW-f7-v5q"/>
+                            <constraint firstItem="TLc-pW-UN8" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="Rkn-xn-4nO"/>
                             <constraint firstItem="UNw-Zw-clx" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="Tmk-Kv-hbq"/>
                             <constraint firstItem="O6A-o7-Wbh" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="UDA-C0-bmx"/>
                             <constraint firstItem="UNw-Zw-clx" firstAttribute="top" secondItem="XzF-8g-4ue" secondAttribute="bottom" constant="8" id="XJc-Ix-3Yb"/>
                             <constraint firstItem="XzF-8g-4ue" firstAttribute="top" secondItem="DM6-Yx-E5S" secondAttribute="bottom" constant="8" id="crO-oG-Ifb"/>
                             <constraint firstItem="DM6-Yx-E5S" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="16" id="f4G-FA-yDR"/>
+                            <constraint firstItem="TLc-pW-UN8" firstAttribute="trailing" secondItem="VUw-jc-0yf" secondAttribute="trailing" id="fTf-7b-q88"/>
                             <constraint firstItem="O6A-o7-Wbh" firstAttribute="trailing" secondItem="VUw-jc-0yf" secondAttribute="trailing" id="gtf-Kb-XxO"/>
                             <constraint firstItem="UNw-Zw-clx" firstAttribute="bottom" secondItem="VUw-jc-0yf" secondAttribute="bottom" id="hxO-KW-QGm"/>
                             <constraint firstItem="O6A-o7-Wbh" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" id="p57-Od-Yie"/>
@@ -173,6 +195,8 @@
                     </navigationItem>
                     <connections>
                         <outlet property="deleteButton" destination="cKP-2D-A65" id="Nej-la-uqm"/>
+                        <outlet property="errorBanner" destination="TLc-pW-UN8" id="lYS-XP-48a"/>
+                        <outlet property="errorLabel" destination="fvk-bE-hSW" id="RV6-6P-Tb6"/>
                         <outlet property="extraNoteLabel" destination="Hao-XW-Dde" id="vMx-6h-KdK"/>
                         <outlet property="isActiveSwitch" destination="KeN-pZ-aI6" id="GY9-8g-tKk"/>
                         <outlet property="isEnterReminderControl" destination="IQt-sp-coW" id="f4N-Ld-jM5"/>
@@ -184,7 +208,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="708" y="128.18590704647679"/>
+            <point key="canvasLocation" x="707.8125" y="127.73437499999999"/>
         </scene>
         <!--Location Search Controller-->
         <scene sceneID="fpB-XB-RdB">

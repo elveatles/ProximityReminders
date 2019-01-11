@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import UserNotifications
 
 /// Allows the user to setup a reminder and save it.
 class DetailViewController: UIViewController {
@@ -25,6 +26,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var isRecurringControl: UISegmentedControl!
     @IBOutlet weak var isActiveSwitch: UISwitch!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var errorBanner: UIView!
+    @IBOutlet weak var errorLabel: UILabel!
     
     /// The number of meters to show when a coordinate of a map is focused on.
     let mapRegionMeters: CLLocationDistance = 1000
@@ -59,8 +62,10 @@ class DetailViewController: UIViewController {
         noteLabel.delegate = self
         extraNoteLabel.delegate = self
         mapView.delegate = mapDelegate
+        AppDelegate.userNotifAuthChanged = userNotifAuthChanged
         
         configureView()
+        updateAuthorizationUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -210,6 +215,26 @@ class DetailViewController: UIViewController {
         }
     }
     
+    /// Show error messages to the user if the app is not authorized to track the user's location or send notifications.
+    func updateAuthorizationUI() {
+        errorBanner.isHidden = true
+        
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            DispatchQueue.main.async {
+                self.errorBanner.isHidden = settings.authorizationStatus == .authorized
+                if settings.authorizationStatus != .authorized {
+                    self.errorLabel.text = "This app will not work properly without notifications allowed."
+                }
+            }
+        }
+        
+        let status = CLLocationManager.authorizationStatus()
+        if status != .authorizedAlways {
+            errorBanner.isHidden = false
+            errorLabel.text = "This app will not work properly without 'always' access to location."
+        }
+    }
+    
     /// Configure the view for a new reminder.
     private func configureViewNew() {
         deleteButton.isEnabled = false
@@ -252,9 +277,20 @@ class DetailViewController: UIViewController {
 
 
 extension DetailViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        updateAuthorizationUI()
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
         MapHelpers.showLocation(with: mapView, coordinate: location.coordinate)
+    }
+}
+
+// UserNotifications.
+extension DetailViewController {
+    func userNotifAuthChanged(success: Bool, error: Error?) {
+        updateAuthorizationUI()
     }
 }
 

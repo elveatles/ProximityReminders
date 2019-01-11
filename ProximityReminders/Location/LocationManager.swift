@@ -94,6 +94,10 @@ class LocationManager: NSObject {
 
 
 extension LocationManager: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        delegate?.locationManager?(manager, didChangeAuthorization: status)
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         delegate?.locationManager?(manager, didUpdateLocations: locations)
     }
@@ -109,7 +113,24 @@ extension LocationManager: CLLocationManagerDelegate {
     // Error handling
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("locationManager didFailWithError: \(error.localizedDescription)")
+        guard let clError = error as? CLError else {
+            print("locationManager didFailWithError: Could not cast error to CLError.")
+            return
+        }
+        
+        guard let errorCode = CLError.Code(rawValue: clError.errorCode) else {
+            print("locationManager didFailWithError: Could not get errorCode as enum.")
+            return
+        }
+        
+        switch errorCode {
+        case .denied:
+            print("locationManger didFailWithError: denied.")
+        case .locationUnknown:
+            print("locationManager didFailWithError: locationUnknown.")
+        default:
+            print("locationManager didFailWithError: error code not handled: \(errorCode)")
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {

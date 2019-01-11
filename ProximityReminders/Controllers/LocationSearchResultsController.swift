@@ -79,13 +79,30 @@ extension LocationSearchResultsController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let mapView = mapView else { return }
         guard let searchText = searchController.searchBar.text else { return }
+        guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = searchText
         request.region = mapView.region
         let search = MKLocalSearch(request: request)
         search.start { (response, error) in
             if let error = error {
-                print("Search error: \(error.localizedDescription)")
+                guard let mkError = error as? MKError else {
+                    print("Search error: Could not cast error to MKError.")
+                    return
+                }
+                
+                guard let errorCode = MKError.Code(rawValue: UInt(mkError.errorCode)) else {
+                    print("Search error: Could not create error code enum.")
+                    return
+                }
+                
+                switch errorCode {
+                case .placemarkNotFound:
+                    print("Search error: placemark not found.")
+                default:
+                    print("Search error: Unhandled code: \(errorCode)")
+                }
                 return
             }
             
