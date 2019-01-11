@@ -28,6 +28,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         }
         
         tableView.dataSource = remindersDataSource
+        remindersDataSource.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -41,6 +42,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         if segue.identifier == "showDetail" {
             // Get the destination detail view controller
             let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
+            detailViewController = controller
             
             // If a cell was selected, set the detail view controller's reminder to the same reminder as the selected cell.
             if let indexPath = tableView.indexPathForSelectedRow {
@@ -62,3 +64,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
 }
 
+
+extension MasterViewController: RemindersDataSourceDelegate {
+    func willDeleteReminder(_ reminder: Reminder) {
+        // Change to creating a new reminder so that the user
+        // won't try to save the old deleted reminder.
+        detailViewController?.reminder = nil
+    }
+}

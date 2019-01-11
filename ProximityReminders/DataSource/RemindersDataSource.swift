@@ -9,10 +9,20 @@
 import UIKit
 import CoreData
 
+
+/// Used to alert outside classes of changes to the data.
+protocol RemindersDataSourceDelegate: AnyObject {
+    /// A reminder will be deleted.
+    /// - Parameter reminder: The reminder that will be deleted.
+    func willDeleteReminder(_ reminder: Reminder)
+}
+
+
 /// Provides data for a table view displaying reminders.
 class RemindersDataSource: NSObject, UITableViewDataSource {
     /// The reminders table view this is linked to.
     let remindersTableView: UITableView
+    weak var delegate: RemindersDataSourceDelegate?
     
     /// The fetched results controller the fetches reminders for the table view.
     lazy var fetchedResultsController: NSFetchedResultsController<Reminder> = {
@@ -87,6 +97,9 @@ class RemindersDataSource: NSObject, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let reminder = fetchedResultsController.object(at: indexPath)
+            
+            delegate?.willDeleteReminder(reminder)
+            
             AppDelegate.locationManager.stopMonitoring(reminder: reminder)
             
             AppDelegate.coreDataManager.delete(reminder)
