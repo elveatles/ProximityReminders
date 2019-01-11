@@ -159,12 +159,15 @@ class DetailViewController: UIViewController {
         
         // Use either the current map item or the saved Reminder data.
         if let mapItem = mapItem {
+            let name = mapItem.name ?? ""
             let address = LocationManager.address(from: mapItem.placemark)
-            locationButton.setTitle(address, for: .normal)
+            let title = "\(name): \(address)"
+            locationButton.setTitle(title, for: .normal)
             
             MapHelpers.addAnnotation(to: mapView, with: mapItem.placemark)
         } else if let reminder = reminder {
-            locationButton.setTitle(reminder.locationAddress, for: .normal)
+            let title = "\(reminder.locationName): \(reminder.locationAddress)"
+            locationButton.setTitle(title, for: .normal)
             
             MapHelpers.addAnnotation(to: mapView, with: reminder)
         }

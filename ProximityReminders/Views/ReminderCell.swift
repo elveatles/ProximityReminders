@@ -28,6 +28,6 @@ class ReminderCell: UITableViewCell {
     /// - Parameter reminder: The reminder to configure with.
     func configure(with reminder: Reminder) {
         noteLabel.text = reminder.note
-        addressLabel.text = reminder.locationAddress
+        addressLabel.text = "\(reminder.locationName): \(reminder.locationAddress)"
     }
 }
