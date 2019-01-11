@@ -112,7 +112,19 @@ class DetailViewController: UIViewController {
             AppDelegate.locationManager.stopMonitoring(reminder: reminderToSave)
         }
         
-        goBackToMaster()
+        let isCollapsed = splitViewController?.isCollapsed ?? true
+        if isCollapsed {
+            goBackToMaster()
+        } else {
+            navigationController?.navigationBar.titleTextAttributes = [
+                .font: UIFont.boldSystemFont(ofSize: 18),
+                .foregroundColor: UIColor(red: 126.0/255.0, green: 155.0/255.0, blue: 94.0/255.0, alpha: 1.0)
+            ]
+            navigationItem.title = "Saved!"
+            Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { (timer) in
+                self.navigationItem.title = ""
+            }
+        }
     }
     
     /// Configure the view with `reminder`.
