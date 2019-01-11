@@ -204,7 +204,7 @@ class DetailViewController: UIViewController {
         extraNoteLabel.text = reminder.extraNote
         isEnterReminderControl.selectedSegmentIndex = reminder.isEnterReminder ? isEnterTrueIndex : isEnterFalseIndex
         isRecurringControl.selectedSegmentIndex = reminder.isRecurring ? isRecurringTrueIndex : isRecurringFalseIndex
-        isActiveSwitch.isOn = reminder.isActiveCP
+        isActiveSwitch.setOn(reminder.isActiveCP, animated: true)
         mapItem = nil
         
         updateLocationUI()
