@@ -93,8 +93,8 @@ class DetailViewController: UIViewController {
         reminderToSave.extraNote = extraNoteLabel.text ?? ""
         reminderToSave.isEnterReminder = isEnterReminderControl.selectedSegmentIndex == isEnterTrueIndex
         reminderToSave.isRecurring = isRecurringControl.selectedSegmentIndex == isRecurringTrueIndex
-        reminderToSave.isActive = isActiveSwitch.isOn
-        reminderToSave.updateSection()
+        reminderToSave.isActiveCP = isActiveSwitch.isOn
+        
         // Location
         if let mapItem = mapItem, let location = mapItem.placemark.location {
             reminderToSave.location = location
@@ -104,7 +104,7 @@ class DetailViewController: UIViewController {
         
         AppDelegate.coreDataManager.save()
         
-        if reminderToSave.isActive {
+        if reminderToSave.isActiveCP {
             AppDelegate.locationManager.startMonitoring(reminder: reminderToSave)
         } else {
             AppDelegate.locationManager.stopMonitoring(reminder: reminderToSave)
@@ -199,7 +199,7 @@ class DetailViewController: UIViewController {
         extraNoteLabel.text = reminder.extraNote
         isEnterReminderControl.selectedSegmentIndex = reminder.isEnterReminder ? isEnterTrueIndex : isEnterFalseIndex
         isRecurringControl.selectedSegmentIndex = reminder.isRecurring ? isRecurringTrueIndex : isRecurringFalseIndex
-        isActiveSwitch.isOn = reminder.isActive
+        isActiveSwitch.isOn = reminder.isActiveCP
         mapItem = nil
         
         updateLocationUI()

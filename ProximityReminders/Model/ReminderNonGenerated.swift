@@ -48,6 +48,21 @@ extension Reminder {
         }
     }
     
+    /// Same as isActive, but it is a computed property.
+    /// Use this instead of isActive.
+    var isActiveCP: Bool {
+        get { return isActive }
+        set {
+            isActive = newValue
+            
+            if newValue {
+                section = "Active Reminders"
+            } else {
+                section = "Inactive Reminders"
+            }
+        }
+    }
+    
     /// Convenient way to get/set locationLatitude and locationLongitude as a CLLocation.
     var location: CLLocation {
         get {
@@ -57,15 +72,6 @@ extension Reminder {
         set {
             locationLatitude = newValue.coordinate.latitude
             locationLongitude = newValue.coordinate.longitude
-        }
-    }
-    
-    /// Update the section base on the state of isActive.
-    func updateSection() {
-        if isActive {
-            section = "Active Reminders"
-        } else {
-            section = "Inactive Reminders"
         }
     }
 }

@@ -55,8 +55,8 @@ class RemindersTests: XCTestCase {
         result.note = reminderNote
         result.extraNote = "Extra"
         result.isEnterReminder = true
-        result.isActive = true
-        result.updateSection()
+        result.isActiveCP = true
+        
         return result
     }
     
@@ -117,7 +117,7 @@ class RemindersTests: XCTestCase {
     func testFetchActive() {
         createReminder()
         let inactiveReminder = createReminder()
-        inactiveReminder.isActive = false
+        inactiveReminder.isActiveCP = false
         coreDataManager.save()
         let reminders = Reminder.fetchActive(context: coreDataManager.context)
         XCTAssertEqual(reminders.count, 1)

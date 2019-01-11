@@ -12,14 +12,6 @@ import CoreLocation
 import UserNotifications
 
 
-/// Used as a delegate to get reminders.
-protocol ReminderDataSource: class {
-    /// Get a reminder given an identfier (probably the location address).
-    /// - Parameter identifier: The identifier to use to fetch a reminder.
-    /// - Returns: The reminder found with the given identifier. nil if a matching reminder was not found.
-    func reminderForIdentifier(_ identifier: String) -> Reminder?
-}
-
 /// Manages location-related things. Wraps CLLocationManager.
 class LocationManager: NSObject {
     /// The radius of a geofenced region.
@@ -27,10 +19,10 @@ class LocationManager: NSObject {
     
     /// The location manger that this class wraps.
     let locManager: CLLocationManager
+    /// Delegate for geofencing-related calls.
+    weak var geofenceDelegate: CLLocationManagerDelegate?
     /// Forwards delegate method calls from the manager.
     weak var delegate: CLLocationManagerDelegate?
-    /// Get reminders when needed.
-    weak var reminderDataSource: ReminderDataSource?
     
     /**
      Get a full address name from a placemark.
@@ -98,45 +90,6 @@ class LocationManager: NSObject {
         guard let theRegion = region else { return }
         locManager.stopMonitoring(for: theRegion)
     }
-    
-    /**
-     Show a notification for a region.
-     
-     Finds the reminder with the same address as the region identfier and shows a notification with reminder's note.
-     
-     - Parameter region: The region to show a notification for.
-    */
-    func showNotification(for region: CLRegion) {
-        guard let dataSource = reminderDataSource else {
-            print("LocationManager.showNotification: Could not show a notification because reminderDataSource is nil.")
-            return
-        }
-        
-        guard let reminder = dataSource.reminderForIdentifier(region.identifier) else {
-            print("LocationManager.showNotification: Could not find reminder with identifier: \(region.identifier)")
-            return
-        }
-        
-        if UIApplication.shared.applicationState == .active {
-            // If application is active, show an alert.
-            let appDelegate = UIApplication.shared.delegate as! AppDelegate
-            appDelegate.window?.rootViewController?.showAlert(title: reminder.locationName, message: reminder.note)
-        } else {
-            // If application is not active create a notification.
-            let notificationContent = UNMutableNotificationContent()
-            notificationContent.body = "\(reminder.locationName): \(reminder.note)"
-            notificationContent.sound = UNNotificationSound.default
-            notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
-            // nil trigger means send notification right away.
-            let request = UNNotificationRequest(identifier: region.identifier, content: notificationContent, trigger: nil)
-            UNUserNotificationCenter.current().add(request) { (error) in
-                if let error = error {
-                    print("Notification error: \(error.localizedDescription)")
-                    return
-                }
-            }
-        }
-    }
 }
 
 
@@ -146,13 +99,11 @@ extension LocationManager: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        print("didEnterRegion: \(region)")
-        showNotification(for: region)
+        geofenceDelegate?.locationManager?(manager, didEnterRegion: region)
     }
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        print("didExitRegion: \(region)")
-        showNotification(for: region)
+        geofenceDelegate?.locationManager?(manager, didEnterRegion: region)
     }
     
     // Error handling
@@ -163,14 +114,5 @@ extension LocationManager: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
         print("locationManager monitoringDidFailFor region: \(error.localizedDescription)")
-    }
-}
-
-
-// Doing it this way so that fetching data can easily be decoupled with LocationManger if needed.
-// Right now, this is relying on AppDelegate.coreDataManager.
-extension LocationManager: ReminderDataSource {
-    func reminderForIdentifier(_ identifier: String) -> Reminder? {
-        return Reminder.fetchByAddress(identifier, context: AppDelegate.coreDataManager.context)
     }
 }

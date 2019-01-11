@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import CoreLocation
 import UserNotifications
 
 @UIApplicationMain
@@ -55,6 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         navigationController.topViewController!.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem
         splitViewController.delegate = self
         
+        AppDelegate.locationManager.geofenceDelegate = self
         UNUserNotificationCenter.current().delegate = self
         // Request authorization for location.
         AppDelegate.locationManager.locManager.requestAlwaysAuthorization()
@@ -111,10 +113,82 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
         return false
     }
+    
+    /**
+     Show a notification for a region.
+     
+     Finds the reminder with the same address as the region identfier and shows a notification with reminder's note.
+     
+     - Parameter region: The region to show a notification for.
+     */
+    func showNotification(for region: CLRegion) {
+        guard let reminder = Reminder.fetchByAddress(region.identifier, context: AppDelegate.coreDataManager.context) else {
+            print("AppDelegate.showNotification: Could not find reminder with identifier: \(region.identifier)")
+            return
+        }
+        
+        if UIApplication.shared.applicationState == .active {
+            // If application is active, show an alert.
+            window?.rootViewController?.showAlert(title: reminder.locationName, message: reminder.note)
+            handleNotification(for: reminder)
+        } else {
+            // If application is not active create a notification.
+            let notificationContent = UNMutableNotificationContent()
+            notificationContent.body = "\(reminder.locationName): \(reminder.note)"
+            notificationContent.sound = UNNotificationSound.default
+            notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+            // nil trigger means send notification right away.
+            let request = UNNotificationRequest(identifier: region.identifier, content: notificationContent, trigger: nil)
+            UNUserNotificationCenter.current().add(request) { (error) in
+                if let error = error {
+                    print("Notification error: \(error.localizedDescription)")
+                    return
+                }
+            }
+        }
+    }
+    
+    /**
+     Handle a notification given a reminder.
+     
+     If the reminder is not recurring, set the reminder to inactive.
+     
+     - Parameter reminder: The reminder to handle.
+    */
+    func handleNotification(for reminder: Reminder) {
+        // If the reminder is not recurring, change it to inactive and stop monitoring for it.
+        if !reminder.isRecurring {
+            print("reminder inactive")
+            reminder.isActiveCP = false
+            AppDelegate.coreDataManager.save()
+            AppDelegate.locationManager.stopMonitoring(reminder: reminder)
+        }
+    }
+}
+
+
+extension AppDelegate: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        showNotification(for: region)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        showNotification(for: region)
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        print("userNotificationCenter didReceive response.")
+        
+        // Find the reminder associated with the notification
+        let request = response.notification.request
+        guard let reminder = Reminder.fetchByAddress(request.identifier, context: AppDelegate.coreDataManager.context) else {
+            print("userNotificationCenter didReceive response: Could not find reminder with identifier: \(request.identifier)")
+            completionHandler()
+            return
+        }
+        
+        handleNotification(for: reminder)
+        completionHandler()
     }
 }
