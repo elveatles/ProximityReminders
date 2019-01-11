@@ -112,6 +112,9 @@ class DetailViewController: UIViewController {
         
         AppDelegate.coreDataManager.save()
         
+        /// If a new reminder is created, it needs to be assigned to the reminder property.
+        reminder = reminderToSave
+        
         if reminderToSave.isActiveCP {
             AppDelegate.locationManager.startMonitoring(reminder: reminderToSave)
         } else {
