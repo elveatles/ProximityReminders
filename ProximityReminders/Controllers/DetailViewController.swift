@@ -55,6 +55,8 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        noteLabel.delegate = self
+        extraNoteLabel.delegate = self
         mapView.delegate = mapDelegate
         
         configureView()
@@ -221,5 +223,17 @@ extension DetailViewController: CLLocationManagerDelegate {
 extension DetailViewController: LocationSearchResultsDelegate {
     func selectedMapItem(_ mapItem: MKMapItem) {
         self.mapItem = mapItem
+    }
+}
+
+
+extension DetailViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.resignFirstResponder()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
